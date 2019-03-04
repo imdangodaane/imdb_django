@@ -1,0 +1,9 @@
+<h1>Create your account:</h1>
+<form action="" method="post">
+    {% csrf_token %}
+    {% comment %} <table> {% endcomment %}
+    {{ form.as_p }}
+    {% comment %} </table> {% endcomment %}
+    <br/>
+    <input type="submit" value="Sign-up">
+</form>
