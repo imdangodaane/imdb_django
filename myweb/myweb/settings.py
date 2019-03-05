@@ -121,7 +121,7 @@ AUTHENTICATION_BACKENDS = [
 # Substituting a custom User model
 # https://docs.djangoproject.com/en/2.1/topics/auth/customizing/#auth-custom-user
 
-# AUTH_USER_MODEL = 'imdb.MyUser'
+AUTH_USER_MODEL = 'imdb.CustomUser'
 
 
 # Internationalization

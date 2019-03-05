@@ -23,6 +23,8 @@ def login(request):
         else:
             return HttpResponse("Invalid Login.")
     else:
+        print(request.session.items())
+        print(request.COOKIES)
         form = LoginForm()
     return render(request, 'imdb/login.html', {'form': form})
 
@@ -40,6 +42,8 @@ def signup(request):
             data.save()
             return render(request, 'imdb/signup_success.html')
     else:
+        print(request.session.items())
+        print(request.COOKIES)
         form = SignupForm()
     return render(request, 'imdb/signup.html', {'form': form})
 
