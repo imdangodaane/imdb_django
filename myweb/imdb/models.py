@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Group, Permission
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Group, Permission, AbstractUser, UserManager
 
 # Create your models here.
 class Login(models.Model):
@@ -18,7 +18,7 @@ class MyUser(models.Model):
         return self.username
 
 
-class CustomUserManager(BaseUserManager):
+class CustomUserManager(UserManager):
     def create_user(self, username, email_address, password=None):
         if not username:
             raise ValueError("User must have an username.")
@@ -26,8 +26,8 @@ class CustomUserManager(BaseUserManager):
             raise ValueError("User must have an email address.")
 
         user = self.model(
-            username=self.get_by_natural_key(username),
-            email_address=self.normalize_email(email_address),
+            username=username,
+            email_address=email_address,
         )
 
         user.set_password(password)
@@ -43,17 +43,18 @@ class CustomUserManager(BaseUserManager):
             raise ValueError("User must have a password.")
 
         user = self.create_user(
-            username=username,
-            email_address=email_address,
+            username,
             password=password,
+            email_address=email_address,
         )
         user.is_admin = True
         user.save(using=self._db)
+        return user
 
 
-class CustomUser(AbstractBaseUser):
-    username = models.CharField(max_length=100, unique=True)
-    password = models.CharField(max_length=100)
+class CustomUser(AbstractUser):
+    username = models.CharField(max_length=100, unique=True,)
+    password = models.CharField(max_length=100,)
     # password_confirm = models.CharField(max_length=100)
     email_address = models.EmailField(max_length=254)
     is_active = models.BooleanField(default=True)
@@ -65,8 +66,8 @@ class CustomUser(AbstractBaseUser):
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'username'
-    # EMAIL_FIELD = 'email_address'
-    # REQUIRED_FIELD = ['email_address']
+    EMAIL_FIELD = 'email_address'
+    REQUIRED_FIELDS = ['email_address']
 
     def __str__(self):
         return self.username
@@ -164,7 +165,7 @@ class Movie(models.Model):
         default=COMEDY,
         )
     actors = models.ManyToManyField(Actor)
-    logo = models.ImageField()
+    logo = models.ImageField(upload_to='logo/')
 
     def __str__(self):
         return self.title

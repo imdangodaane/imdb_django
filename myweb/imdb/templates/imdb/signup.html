@@ -1,9 +1,39 @@
+{% extends 'imdb/base.html' %}
+
+{% block signup %}
+<div class="container">
+</br>
 <h1>Create your account:</h1>
-<form action="" method="post">
+</br>
+<form action="/imdb/signup/" method="post">
     {% csrf_token %}
-    {% comment %} <table> {% endcomment %}
-    {{ form.as_p }}
-    {% comment %} </table> {% endcomment %}
-    <br/>
-    <input type="submit" value="Sign-up">
+    {{ form.username.errors }}
+    <div class="form-group row">
+        <label for="id_username" class="col-sm-2 col-form-label">Username:</label>
+        <div class="col-sm-7">
+            <input type="text" class="form-control" id="id_username" name="username" placeholder="Username">
+        </div>
+    </div>
+
+    {{ form.password.errors }}
+    <div class="form-group row">
+        <label for="id_password" class="col-sm-2 col-form-label">Password:</label>
+        <div class="col-sm-7">
+            <input type="password" class="form-control" id="id_password" name="password" placeholder="Password">
+        </div>
+    </div>
+
+    {{ form.password_confirm.errors }}
+    <div class="form-group row">
+        <label for="id_password_confirm" class="col-sm-2 col-form-label">Password confirmation:</label>
+        <div class="col-sm-7">
+            <input type="password" class="form-control" id="id_password_confirm" name="password_confirm" placeholder="Password confirmation">
+        </div>
+    </div>
+    </br>
+    <input type="submit" class="btn btn-success" value="Signup">
+    <a class="btn btn-link" href="/imdb/">Homepage</a>
+</div>
 </form>
+
+{% endblock %}

@@ -1,21 +1,42 @@
-<h1>Login Session</h1>
-<form action="" method="post">
+{% extends 'imdb/base.html' %}
+
+{% block login %}
+<div class="container">
+</br>
+    <div class="col justify-content-md-center">
+        <div class="col">
+        <h1>Login to IMDB Database</h1>
+        </div>
+        <form action="/imdb/login/" method="post">
+        {% csrf_token %}
+        {{ form.username.errors }}
+        <div class="col-7">
+            <label for="id_username">Username:</label>
+            <input type="text" class="form-control" id="id_username" name="username" placeholder="Enter your username">
+        </div>
+        {{ form.password.errors }}
+        <div class="col-7">
+            <label for="id_password">Password:</label>
+            <input type="password" class="form-control" id="id_password" name="password" placeholder="Enter your password">
+        </div>
+        </br>
+        <div class="col">
+        <input type="submit" class="btn btn-primary" value="Login">
+        </form>
+        <a href="/imdb/signup/">Create an account</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% comment %} <form action="" method="post">
     {% csrf_token %}
     <table>
+    {{ form.username }}
+    {{ form.password }}
     {{ form.as_table }}
     </table>
-    {% comment %} {{ form.non_field_errors }}
-    <div class="fieldWrapper">
-        {{ form.username.errors }}
-        <label for="{{ form.subject.id_username }}">Username:</label>
-        {{ form.username }}
-    </div>
-    <div class="fieldWrapper">
-        {{ form.password.errors }}
-        <label for="{{ form.message.id_password }}">Password:</label>
-        {{ form.password }}
-    </div> {% endcomment %}
     <br/>
-    <input type="submit" value="Login">
+    <input type="submit" class="btn btn-primary" value="Login">
 </form>
-<a href="/imdb/signup/">Create an account</a>
+<a href="/imdb/signup/">Create an account/a> {% endcomment %}

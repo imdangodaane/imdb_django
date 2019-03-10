@@ -1,2 +1,10 @@
-<h1>Sign-up success.</h1>
-Go to <a href='/imdb/login/'>Log-in</a>
+{% extends 'imdb/base.html' %}
+
+{% block signup_success %}
+</br>
+<div class='container'>
+    <h1>Sign-up success.</h1>
+    </br>
+    <a href='/imdb/login/' class='btn btn-primary'>Log-in</a>
+</div>
+{% endblock %}

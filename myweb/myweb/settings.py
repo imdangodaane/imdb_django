@@ -64,6 +64,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',
             ],
         },
     },
@@ -115,14 +116,27 @@ PASSWORD_HASHERS = {
 # https://docs.djangoproject.com/en/2.1/topics/auth/customizing/
 
 AUTHENTICATION_BACKENDS = [
-    'imdb.mybackend.MyBackend'
+    # 'imdb.mybackend.MyBackend',
+    'django.contrib.auth.backends.ModelBackend',
 ]
 
 # Substituting a custom User model
 # https://docs.djangoproject.com/en/2.1/topics/auth/customizing/#auth-custom-user
 
-AUTH_USER_MODEL = 'imdb.CustomUser'
+# AUTH_USER_MODEL = 'imdb.CustomUser'
 
+# Redirect admin-site after login
+# https://stackoverflow.com/questions/11036267/redirecting-to-another-page-after-django-admin-login
+
+# LOGIN_REDIRECT_URL  = '/'
+
+# Media Section
+# https://simpleisbetterthancomplex.com/tutorial/2016/08/01/how-to-upload-files-with-django.html
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+STATIC_URL = '/static/'
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
@@ -142,3 +156,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+LOGIN_URL = '/imdb/login/'

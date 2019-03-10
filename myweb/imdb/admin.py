@@ -3,9 +3,11 @@ from django.contrib import admin
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
+from imdb.models import Movie, Actor, Award
 
 # Register your models here.
 from imdb.models import CustomUser
+from django.contrib.auth.models import User
 
 class CustomUserCreationForm(forms.ModelForm):
     class Meta:
@@ -13,6 +15,7 @@ class CustomUserCreationForm(forms.ModelForm):
         password_confirm = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
         model = CustomUser
         fields = ('username', 'email_address')
+        # fields = '__all__'
 
     def clean_password_confirm(self):
         password = self.cleaned_data.get('password')
@@ -63,6 +66,9 @@ class CustomUserAdmin(BaseUserAdmin):
     ordering = ('username',)
     filter_hozirontal = ()
 
-admin.site.register(CustomUser, CustomUserAdmin)
-
-admin.site.unregister(Group)
+# admin.site.register(CustomUser, CustomUserAdmin)
+admin.site.register(Movie)
+admin.site.register(Actor)
+admin.site.register(Award)
+# admin.site.register(User)
+# admin.site.unregister(Group)

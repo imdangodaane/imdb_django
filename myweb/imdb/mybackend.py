@@ -1,4 +1,4 @@
-from imdb.models import MyUser
+from imdb.models import MyUser, CustomUser
 from django.contrib.auth.hashers import check_password
 
 class MyBackend:
@@ -11,23 +11,16 @@ class MyBackend:
         and return a user object that matches those credentials if the
         credentials are valid. If they’re not valid, it should return None.
         """
-        username_valid = (username in list(MyUser.objects.values_list('username', flat=True)))
+        username_valid = (username in list(CustomUser.objects.values_list('username', flat=True)))
         if username_valid:
             try:
-                user = MyUser.objects.get(username=username)
+                user = CustomUser.objects.get(username=username)
                 password_valid = check_password(password, user.password)
                 if password_valid:
                     return user
-            except MyUser.DoesNotExist:
+            except CustomUser.DoesNotExist:
                 return None
         return None
-
-        # try:
-        #     user = MyUser.objects.get(username=username)
-        #     if user:
-        #         return user
-        # except MyUser.DoesNotExist:
-        #     return None
 
     def get_user(self, username):
         """
@@ -36,6 +29,6 @@ class MyBackend:
         user object – and returns a user object or None.
         """
         try:
-            return MyUser.objects.get(username=username)
-        except MyUser.DoesNotExist:
+            return CustomUser.objects.get(username=username)
+        except CustomUser.DoesNotExist:
             return None

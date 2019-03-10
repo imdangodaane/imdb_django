@@ -1,7 +1,8 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.hashers import is_password_usable, make_password, check_password
-from imdb.models import Login, MyUser, Movie, Actor, Award
+from imdb.models import Login, MyUser, Movie, Actor, Award, CustomUser
+from django.contrib.auth.models import User
 from datetime import datetime
 
 BIRTH_YEAR_CHOICES = ('1980', '1981', '1982')
@@ -12,7 +13,7 @@ FAVORITE_COLORS_CHOICES = (
 )
 
 
-class LoginForm(forms.ModelForm):
+class LoginForm(forms.Form):
     # user_name = forms.CharField(label='Username', max_length=100, widget=forms.TextInput)
     # password = forms.CharField(widget=forms.PasswordInput)
     # message = forms.CharField(widget=forms.Textarea)
@@ -22,53 +23,72 @@ class LoginForm(forms.ModelForm):
     #     widget=forms.CheckboxSelectMultiple,
     #     choices=FAVORITE_COLORS_CHOICES,
     # )
-
+    username = forms.CharField(max_length=150, label='Username')
+    password = forms.CharField(max_length=100, label='Password', widget=forms.PasswordInput)
     class Meta:
-        model = Login
+        # model = Login
         fields = ('username', 'password')
-        labels = {
-            'username': _('Username'),
-            'password': _('Password'),
-        }
-        widgets = {
-            'password': forms.PasswordInput,
-        }
-        help_texts = {
+        # labels = {
+        #     'username': _('Username'),
+        #     'password': _('Password'),
+        # }
+        # widgets = {
+        #     'password': forms.PasswordInput,
+        # }
+        # help_texts = {
             # 'username': _('Your username.'),
             # 'password': _('Your password.'),
-        }
-        error_messages = {
-            'username': {
-                'max_length': _("This username is too long.")
-            },
-        }
+        # }
+        # error_messages = {
+        #     'username': {
+        #         'max_length': _("This username is too long.")
+        #     },
+        # }
+
+    def clean(self):
+        cleaned_data = super(LoginForm, self).clean()
+        username = cleaned_data.get('username')
+        password = cleaned_data.get('password')
+        username_list = list(User.objects.values_list('username', flat=True))
+        if username not in username_list:
+            raise forms.ValidationError(
+                'Username not found, please create an account.'
+            )
+        user_obj = User.objects.get(username=username)
+        if not check_password(password, user_obj.password):
+            raise forms.ValidationError(
+                'Password invalid, please try again.'
+            )
+
 
 
 class SignupForm(forms.ModelForm):
+    password_confirm = forms.CharField(widget=forms.PasswordInput, help_text="Re-enter your password.")
 
     class Meta:
-        model = MyUser
-        fields = ('username', 'password', 'password_confirm', 'email_address')
+        model = User
+        fields = ('username', 'password', 'password_confirm',)
 
         labels = {
-            'username' : _('Username *'),
-            'email_address': _('Email address *'),
-            'password': _('Password *',)
+            'username' : _('Username'),
+            # 'email_address': _('Email address *'),
+            'password': _('Password'),
+            'password_confirm': _('Password confirmation'),
         }
         widgets = {
             'password': forms.PasswordInput,
-            'password_confirm': forms.PasswordInput,
-            'email_address': forms.EmailInput,
+            # 'password_confirm': forms.PasswordInput,
+            # 'email_address': forms.EmailInput,
         }
         help_texts = {
             'username': _('Username may only contain alphanumeric characters or single hyphens, and cannot begin or end with a hyphen.'),
-            'email_address': _('We’ll occasionally send updates about your account to this inbox. We’ll never share your email address with anyone.'),
+            # 'email_address': _('We’ll occasionally send updates about your account to this inbox. We’ll never share your email address with anyone.'),
             'password': _("Make sure it's more than 15 characters OR at least 8 characters including a number and a lowercase letter."),
-            'password_confirm': _("Re-enter your password.",)
+            # 'password_confirm': _("Re-enter your password.",)
         }
         error_messages = {
             'username': {
-                'max_length': _("This username is too long.")
+                'max_length': _("This username is too long."),
             },
         }
 
@@ -80,9 +100,9 @@ class SignupForm(forms.ModelForm):
             raise forms.ValidationError(
                 'Password and confirmation password does not match.'
             )
-        USERNAME_LIST = list(MyUser.objects.values_list('username', flat=True))
+        username_list = list(User.objects.values_list('username', flat=True))
         username = cleaned_data.get('username')
-        if username in USERNAME_LIST:
+        if username in username_list:
             raise forms.ValidationError(
                 'This name has exist, please choose another name.'
             )
