@@ -1,6 +1,6 @@
 {% extends 'imdb/base.html' %}
 
-{% block login %}
+{% comment %} {% block login %}
 <div class="container">
 </br>
     <div class="col justify-content-md-center">
@@ -27,6 +27,27 @@
         </div>
     </div>
 </div>
+{% endblock %} {% endcomment %}
+
+{% block login %}
+{% load static %}
+<link href="{% static "imdb/login.css"%}" rel="stylesheet">
+<body class="text-center">
+    <form class="form-login" action="/imdb/login/" method="post">
+      {% csrf_token %}
+      <img class="mb-4" src="{% static "imdb/images/cat.png"%}" alt="" class="rounded" width="72" height="72">
+      <h1 class="h3 mb-3 font-weight-normal">Login to IMDB</h1>
+      <label for="id_username" class="sr-only">Username</label>
+      <input type="text" id="id_username" name="username" class="form-control" placeholder="Username">
+      <label for="id_password" class="sr-only">Password</label>
+      <input type="password" id="id_password" name="password" class="form-control" placeholder="Password">
+      <input type="submit" class="btn btn-lg btn-primary btn-block" value="Login">
+      {% comment %} <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button> {% endcomment %}
+      <p class="mt-5 mb-3 text-muted">&copy; 2019 ~ 9999</p>
+      <a href="/imdb/signup/">Create an account</a>
+    </form>
+</body>
+
 {% endblock %}
 
 {% comment %} <form action="" method="post">

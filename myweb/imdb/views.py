@@ -72,9 +72,11 @@ def signup_success(request):
 
 @login_required
 def movies(request):
-    movies = Movie.objects.all()
-    movies_json = list(movies.values())
-    return JsonResponse(movies_json, safe=False, json_dumps_params={'indent': 4})
+    movies = list(Movie.objects.all().order_by('title'))
+    recent_added = list(Movie.objects.all().order_by('-id'))[:3]
+    # movies_json = list(movies.values())
+    # return JsonResponse(movies_json, safe=False, json_dumps_params={'indent': 4})'
+    return render(request, 'imdb/movies.html', {'movies': movies, 'recent_added': recent_added})
 
 @login_required
 def add_movie(request):
@@ -85,13 +87,15 @@ def add_movie(request):
             return HttpResponseRedirect('/imdb/movies/')
     else:
         form = MovieForm()
-    return render(request, 'imdb/movies.html', {'form': form})
+    return render(request, 'imdb/add_movie.html', {'form': form})
 
 @login_required
 def actors(request):
-    actors = Actor.objects.all()
-    actors_json = list(actors.values())
-    return JsonResponse(actors_json, safe=False, json_dumps_params={'indent': 4})
+    actors = list(Actor.objects.all().order_by('first_name'))
+    recent_added = list(Actor.objects.all().order_by('-id'))[:3]
+    # actors_json = list(actors.values())
+    # return JsonResponse(actors_json, safe=False, json_dumps_params={'indent': 4})
+    return render(request, 'imdb/actors.html', {'actors': actors, 'recent_added': recent_added})
 
 @login_required
 def add_actor(request):
@@ -102,13 +106,20 @@ def add_actor(request):
             return HttpResponseRedirect('/imdb/actors/')
     else:
         form = ActorForm()
-    return render(request, 'imdb/actors.html', {'form': form})
+    return render(request, 'imdb/add_actor.html', {'form': form})
 
 @login_required
 def awards(request):
-    awards = Award.objects.all()
-    awards_json = list(awards.values())
-    return JsonResponse(awards_json, safe=False, json_dumps_params={'indent': 4})
+    awards = list(Award.objects.all().order_by('name'))
+    movie_awards = list(Award.objects.filter(kind__exact='Movie'))
+    actor_awards = list(Award.objects.filter(kind__exact='Actor'))
+    recent_added = list(Award.objects.all().order_by('-id'))[:3]
+    # awards_json = list(awards.values())
+    # return JsonResponse(awards_json, safe=False, json_dumps_params={'indent': 4})
+    return render(request, 'imdb/awards.html', {'awards': awards,
+                                                'recent_added': recent_added,
+                                                'movie_awards': movie_awards,
+                                                'actor_awards': actor_awards,})
 
 @login_required
 def add_award(request):
@@ -119,4 +130,4 @@ def add_award(request):
             return HttpResponseRedirect('/imdb/awards/')
     else:
         form = AwardForm()
-    return render(request, 'imdb/awards.html', {'form': form})
+    return render(request, 'imdb/add_xaward.html', {'form': form})

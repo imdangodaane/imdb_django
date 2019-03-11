@@ -1,9 +1,91 @@
-<h1>Actors Form</h1>
-<form action="" method="post">
-    {% csrf_token %}
-    <table>
-    {{ form.as_table }}
-    </table>
-    <br/>
-    <input type="submit" value="Submit">
-</form>
+{% extends "imdb/base.html" %}
+
+{% block actors %}
+{% load static %}
+<link href="{% static "imdb/offcanvas.css" %}" rel="stylesheet">
+<body class="bg-light">
+
+<div class="pos-f-t">
+    <div class="collapse" id="navbarToggleExternalContent">
+        <div class="bg-dark p-4">
+            <h5 class="text-white h4">Welcome to IMDB index page.</h5>
+            <span class="text-muted">The largest internet movie database.</span>
+        </div>
+    </div>
+</div>
+
+<nav class="navbar fixed-top navbar-dark bg-dark">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <a class="btn btn-outline-primary" href="/imdb/">IMDB</a>
+    <a class="nav-link" href="/imdb/movies/">Movies</a>
+    <a class="nav-link" href="/imdb/actors/">Actors</a>
+    <a class="nav-link" href="/imdb/awards/">Awards</a>
+
+    <form class="form-inline">
+        {% if user.is_authenticated %}
+        {% comment %} <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button> {% endcomment %}
+        <a class="btn btn-danger" href="/imdb/logout/">Log-out</a>
+        {% else %}
+        <a class="btn btn-primary" href="/imdb/login/">Log-in</a>
+        <a class="btn btn-link" href="/imdb/signup/">Sign-up</a>
+        {% endif %}
+    </form>
+</nav>
+
+<main role="main" class="container">
+    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded shadow-sm">
+        <img class="mr-3" src="{% static "imdb/images/movies.png" %}" alt="" width="48" height="48">
+        <div class="lh-100">
+        <h6 class="mb-0 text-white lh-100">Actors</h6>
+        <small>Database</small>
+        </div>
+    </div>
+    <small class="d-block text-right mt-3">
+        <a href='add/' class='btn btn-primary'>Add actor</a>
+    </small>
+
+    <div class="my-3 p-3 bg-white rounded shadow-sm">
+        <h6 class="border-bottom border-gray pb-2 mb-0">Recent added</h6>
+        {% for actor in recent_added %}
+        <div class="media text-muted pt-3">
+        <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"/><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
+        <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+            <strong class="d-block text-gray-dark">
+            <a href="#">
+            {{ actor }}
+            </a>
+            </strong>
+            {{ actor.nationalities }}
+        </p>
+        </div>
+        {% endfor %}
+        <small class="d-block text-right mt-3">
+            <a href="#">All Actors</a>
+        </small>
+    </div>
+
+    <div class="my-3 p-3 bg-white rounded shadow-sm">
+    <h6 class="border-bottom border-gray pb-2 mb-0">All actors</h6>
+    {% for actor in actors %}
+    <div class="media text-muted pt-3">
+      <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"/><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
+      <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+        <div class="d-flex justify-content-between align-items-center w-100">
+          <strong class="d-block text-gray-dark">
+            <a href="#">
+            {{ actor }}
+            </a>
+          </strong>
+        </div>
+        <span class="d-block">{{ actor.nationalities }}</span>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</main>
+</body>
+{% endblock %}
