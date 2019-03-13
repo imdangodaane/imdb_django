@@ -120,31 +120,37 @@ class SignupForm(forms.ModelForm):
 class MovieForm(forms.ModelForm):
 
     class Meta:
-        CUR_YEAR = datetime.today().year
-        YEAR_RANGE = tuple([i for i in range(1900, CUR_YEAR + 1)])
         #    favorite_colors = forms.MultipleChoiceField(
         #     required=False,
         #     widget=forms.CheckboxSelectMultiple,
         #     choices=FAVORITE_COLORS_CHOICES,
         # )
+
         
         model = Movie
         fields = "__all__"
         widgets = {
-            'release_date': forms.SelectDateWidget(years=YEAR_RANGE),
+            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Your movie name'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Movie description', 'rows': '3',}),
+            'release_date': forms.SelectDateWidget(years=range(datetime.today().year, 1800, -1), attrs={'class': 'form-control'}),
+            'categories': forms.Select(attrs={'class': 'custom-select d-block w-100',}),
             'actors': forms.CheckboxSelectMultiple,
+            'logo': forms.FileInput(attrs={'class': 'custom-file-input',}),
         }
 
 
 class ActorForm(forms.ModelForm):  
     
     class Meta:
-        CUR_YEAR = datetime.today().year
-        YEAR_RANGE = tuple([i for i in range(1980, CUR_YEAR + 1)])
         model = Actor
         fields = "__all__"
         widgets = {
-            'birthdate': forms.SelectDateWidget(years=YEAR_RANGE),
+            'first_name': forms.TextInput(attrs={'class': 'form-control',}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control',}),
+            'birthdate': forms.SelectDateWidget(years=range(datetime.today().year, 1800, -1), attrs={'class': 'form-control'}),
+            'sex': forms.Select(attrs={'class': 'custom-select d-block w-100',}),
+            'nationalities': forms.Select(attrs={'class': 'custom-select d-block w-100',}),
+            'alive': forms.Select(attrs={'class': 'custom-select d-block w-100',}),
         }
 
 
@@ -153,3 +159,7 @@ class AwardForm(forms.ModelForm):
     class Meta:
         model = Award
         fields = "__all__"
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control',}),
+            'kind': forms.Select(attrs={'class': 'custom-select d-block w-100',}),
+        }

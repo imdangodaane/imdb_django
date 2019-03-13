@@ -1,63 +1,33 @@
 {% extends 'imdb/base.html' %}
 
-{% comment %} {% block login %}
-<div class="container">
-</br>
-    <div class="col justify-content-md-center">
-        <div class="col">
-        <h1>Login to IMDB Database</h1>
-        </div>
-        <form action="/imdb/login/" method="post">
-        {% csrf_token %}
-        {{ form.username.errors }}
-        <div class="col-7">
-            <label for="id_username">Username:</label>
-            <input type="text" class="form-control" id="id_username" name="username" placeholder="Enter your username">
-        </div>
-        {{ form.password.errors }}
-        <div class="col-7">
-            <label for="id_password">Password:</label>
-            <input type="password" class="form-control" id="id_password" name="password" placeholder="Enter your password">
-        </div>
-        </br>
-        <div class="col">
-        <input type="submit" class="btn btn-primary" value="Login">
-        </form>
-        <a href="/imdb/signup/">Create an account</a>
-        </div>
-    </div>
-</div>
-{% endblock %} {% endcomment %}
-
 {% block login %}
 {% load static %}
 <link href="{% static "imdb/login.css"%}" rel="stylesheet">
+
 <body class="text-center">
-    <form class="form-login" action="/imdb/login/" method="post">
+    <form class="form-login" action="{% url "imdb:login "%}" method="post">
       {% csrf_token %}
+
       <img class="mb-4" src="{% static "imdb/images/cat.png"%}" alt="" class="rounded" width="72" height="72">
+
       <h1 class="h3 mb-3 font-weight-normal">Login to IMDB</h1>
+
+      <hr class="mb-4">
+
       <label for="id_username" class="sr-only">Username</label>
       <input type="text" id="id_username" name="username" class="form-control" placeholder="Username">
+
       <label for="id_password" class="sr-only">Password</label>
       <input type="password" id="id_password" name="password" class="form-control" placeholder="Password">
+
+      <hr class="mb-4">
+
       <input type="submit" class="btn btn-lg btn-primary btn-block" value="Login">
-      {% comment %} <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button> {% endcomment %}
+
       <p class="mt-5 mb-3 text-muted">&copy; 2019 ~ 9999</p>
-      <a href="/imdb/signup/">Create an account</a>
+      <a href="{% url "imdb:signup" %}">Create an account</a>
+      
     </form>
 </body>
 
 {% endblock %}
-
-{% comment %} <form action="" method="post">
-    {% csrf_token %}
-    <table>
-    {{ form.username }}
-    {{ form.password }}
-    {{ form.as_table }}
-    </table>
-    <br/>
-    <input type="submit" class="btn btn-primary" value="Login">
-</form>
-<a href="/imdb/signup/">Create an account/a> {% endcomment %}

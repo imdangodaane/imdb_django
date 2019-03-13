@@ -1,0 +1,42 @@
+{% extends 'imdb/base.html' %}
+{% block add_award %}
+{% load static %}
+
+<body class="bg-light">
+    <div class="container">
+
+        <div class="py-5 text-left">
+          <h2>Add award form</h2>
+        </div>
+        <div class="row">
+          <div class="col-md-8 order-md-1">
+
+            <h4 class="mb-3">Please fill-in award information</h4>
+
+            <form action="{% url "imdb:addaward" %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="mb-3">
+            <label>Award Name:</label>
+            {{ form.name }}
+            </div>
+
+            <div class="mb-3">
+            <label>Award Kind:</label>
+            {{ form.kind }}
+            </div>
+
+            <hr class="mb-4">
+            <input class="btn btn-primary btn-lg btn-block" type="submit" value="Add award">
+            </form>
+        </div>
+    </div>
+    <footer class="my-5 pt-5 text-muted text-center text-small">
+        <p class="mb-1">&copy; 2019-9999 @nqui</p>
+        <ul class="list-inline">
+        </ul>
+    </footer>
+</div>
+    <script src="{% static "/imdb/form-validation.js"%}"></script>
+</body>
+{% endblock %}

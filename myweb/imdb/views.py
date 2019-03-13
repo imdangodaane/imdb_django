@@ -1,13 +1,11 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.contrib.auth.hashers import make_password, is_password_usable
-from django.core import serializers
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
 from .forms import LoginForm, SignupForm, MovieForm, ActorForm, AwardForm
-from .models import Actor, Movie, Award, MyUser, CustomUser
-from .admin import CustomUserCreationForm
+from .models import Actor, Movie, Award
 import json
 
 # Create your views here.
@@ -20,14 +18,6 @@ def login(request):
     except KeyError:
         next_page = '/imdb/'
     if request.method == 'POST':
-        # username = request.POST['username']
-        # password = request.POST['password']
-        # user = authenticate(request, username=username, password=password)
-        # if user is not None:
-        #     request.session['member_id'] = user.id
-        #     return HttpResponseRedirect('/imdb/users/')
-        # else:
-        #     return HttpResponse("Invalid Login.")
         form = LoginForm(request.POST)
         if form.is_valid():
             username = request.POST['username']
@@ -35,7 +25,6 @@ def login(request):
             user = authenticate(request, username=username, password=password)
             if user is not None and user.is_active:
                 auth_login(request, user)
-                # request.session['member_id'] = user.id
                 return HttpResponseRedirect(next_page)
             else:
                 error_msg = 'There was an error!'
@@ -58,9 +47,6 @@ def signup(request):
     if request.method == 'POST':
         form = SignupForm(request.POST)
         if form.is_valid():
-            # data = form.save(commit=False)
-            # data.password_confirm = ""
-            # data.save()
             form.save()
             return render(request, 'imdb/signup_success.html')
     else:
@@ -74,8 +60,6 @@ def signup_success(request):
 def movies(request):
     movies = list(Movie.objects.all().order_by('title'))
     recent_added = list(Movie.objects.all().order_by('-id'))[:3]
-    # movies_json = list(movies.values())
-    # return JsonResponse(movies_json, safe=False, json_dumps_params={'indent': 4})'
     return render(request, 'imdb/movies.html', {'movies': movies, 'recent_added': recent_added})
 
 @login_required
@@ -83,18 +67,23 @@ def add_movie(request):
     if request.method == 'POST':
         form = MovieForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            new_movie = form.save(commit=False)
+            new_movie.save()
+            form.save_m2m()
             return HttpResponseRedirect('/imdb/movies/')
     else:
         form = MovieForm()
     return render(request, 'imdb/add_movie.html', {'form': form})
 
 @login_required
+def movie_detail(request, pk):
+    obj = get_object_or_404(Movie, pk=pk)
+    return render(request, 'imdb/movie_detail.html', {'obj': obj,})
+
+@login_required
 def actors(request):
     actors = list(Actor.objects.all().order_by('first_name'))
     recent_added = list(Actor.objects.all().order_by('-id'))[:3]
-    # actors_json = list(actors.values())
-    # return JsonResponse(actors_json, safe=False, json_dumps_params={'indent': 4})
     return render(request, 'imdb/actors.html', {'actors': actors, 'recent_added': recent_added})
 
 @login_required
@@ -109,13 +98,16 @@ def add_actor(request):
     return render(request, 'imdb/add_actor.html', {'form': form})
 
 @login_required
+def actor_detail(request, pk):
+    obj = get_object_or_404(Actor, pk=pk)
+    return render(request, 'imdb/actor_detail.html', {'obj': obj,})
+
+@login_required
 def awards(request):
     awards = list(Award.objects.all().order_by('name'))
-    movie_awards = list(Award.objects.filter(kind__exact='Movie'))
-    actor_awards = list(Award.objects.filter(kind__exact='Actor'))
+    movie_awards = list(Award.objects.filter(kind__iexact='Movie'))
+    actor_awards = list(Award.objects.filter(kind__iexact='Actor'))
     recent_added = list(Award.objects.all().order_by('-id'))[:3]
-    # awards_json = list(awards.values())
-    # return JsonResponse(awards_json, safe=False, json_dumps_params={'indent': 4})
     return render(request, 'imdb/awards.html', {'awards': awards,
                                                 'recent_added': recent_added,
                                                 'movie_awards': movie_awards,
@@ -130,4 +122,9 @@ def add_award(request):
             return HttpResponseRedirect('/imdb/awards/')
     else:
         form = AwardForm()
-    return render(request, 'imdb/add_xaward.html', {'form': form})
+    return render(request, 'imdb/add_award.html', {'form': form})
+
+@login_required
+def award_detail(request, pk):
+    obj = get_object_or_404(Award, pk=pk)
+    return render(request, 'imdb/award_detail.html', {'obj': obj,})

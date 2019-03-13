@@ -115,6 +115,7 @@ class Actor(models.Model):
             ('NA', 'NA'),
         ),
         default='NA',
+        blank=True,
     )
 
     def __str__(self):
@@ -165,7 +166,7 @@ class Movie(models.Model):
         default=COMEDY,
         )
     actors = models.ManyToManyField(Actor)
-    logo = models.ImageField(upload_to='logo/')
+    logo = models.ImageField(upload_to='logo/', blank=True,)
 
     def __str__(self):
         return self.title

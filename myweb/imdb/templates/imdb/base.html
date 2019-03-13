@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -10,6 +11,7 @@
 
     <title>IMDB Database</title>
 </head>
+
 <body>
     {% block index %}
     {% endblock %}
@@ -19,15 +21,28 @@
     {% endblock %}
     {% block signup_success %}
     {% endblock %}
+
     {% block movies %}
-    {% endblock %}
-    {% block actors %}
-    {% endblock %}
-    {% block awards %}
     {% endblock %}
     {% block add_movie %}
     {% endblock %}
-    
+    {% block movie_detail %}
+    {% endblock %}
+
+    {% block actors %}
+    {% endblock %}
+    {% block add_actor %}
+    {% endblock %}
+    {% block actor_detail %}
+    {% endblock %}
+
+    {% block awards %}
+    {% endblock %}
+    {% block add_award %}
+    {% endblock %}
+    {% block award_detail %}
+    {% endblock %}
+
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

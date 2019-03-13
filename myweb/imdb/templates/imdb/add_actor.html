@@ -1,0 +1,64 @@
+{% extends 'imdb/base.html' %}
+{% block add_actor %}
+{% load static %}
+
+<body class="bg-light">
+    <div class="container">
+
+        <div class="py-5 text-left">
+          <h2>Add actor form</h2>
+        </div>
+        <div class="row">
+          <div class="col-md-8 order-md-1">
+
+            <h4 class="mb-3">Please fill-in actor information</h4>
+
+            <form action="{% url "imdb:addactor" %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="mb-3">
+            <label>First Name:</label>
+            {{ form.first_name }}
+            </div>
+
+            <div class="mb-3">
+            <label>Last Name:</label>
+            {{ form.last_name }}
+            </div>
+
+            <div class="mb-3">
+            <label>Birthdate:</label>
+                <div class="input-group">
+                {{ form.birthdate }}
+                </div>
+            </div>
+
+            <div class="mb-3">
+            <label>Gender</label>
+            {{ form.sex }}
+            </div>
+
+            <div class="mb-3">
+            <label>National:</label>
+            {{ form.nationalities }}
+            </div>
+
+            <div class="mb-3">
+            <label>Status:</label>
+            {{ form.alive }}
+            </div>
+
+            <hr class="mb-4">
+            <input class="btn btn-primary btn-lg btn-block" type="submit" value="Add actor">
+            </form>
+        </div>
+    </div>
+    <footer class="my-5 pt-5 text-muted text-center text-small">
+        <p class="mb-1">&copy; 2019-9999 @nqui</p>
+        <ul class="list-inline">
+        </ul>
+    </footer>
+</div>
+    <script src="{% static "/imdb/form-validation.js"%}"></script>
+</body>
+{% endblock %}

@@ -19,24 +19,23 @@
         <span class="navbar-toggler-icon"></span>
     </button>
 
-    <a class="btn btn-outline-primary" href="/imdb/">IMDB</a>
-    <a class="nav-link" href="/imdb/movies/">Movies</a>
-    <a class="nav-link" href="/imdb/actors/">Actors</a>
-    <a class="nav-link" href="/imdb/awards/">Awards</a>
+    <a class="btn btn-outline-primary" href="{% url "idmb:index" %}">IMDB</a>
+    <a class="nav-link" href="{% url "imdb:movies" %}">Movies</a>
+    <a class="nav-link" href="{% url "imdb:actors" %}">Actors</a>
+    <a class="nav-link" href="{% url "imdb:awards" %}">Awards</a>
 
     <form class="form-inline">
         {% if user.is_authenticated %}
-        {% comment %} <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button> {% endcomment %}
-        <a class="btn btn-danger" href="/imdb/logout/">Log-out</a>
+        <a class="btn btn-danger" href="{% url "imdb:logout" %}">Log-out</a>
         {% else %}
-        <a class="btn btn-primary" href="/imdb/login/">Log-in</a>
-        <a class="btn btn-link" href="/imdb/signup/">Sign-up</a>
+        <a class="btn btn-primary" href="{% url "imdb:login" %}">Log-in</a>
+        <a class="btn btn-link" href="{% url "imdb:signup" %}">Sign-up</a>
         {% endif %}
     </form>
 </nav>
 
 <main role="main" class="container">
+
     <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded shadow-sm">
         <img class="mr-3" src="{% static "imdb/images/movies.png" %}" alt="" width="48" height="48">
         <div class="lh-100">
@@ -45,56 +44,155 @@
         </div>
     </div>
     <small class="d-block text-right mt-3">
-        <a href='add/' class='btn btn-primary'>Add award</a>
+        <a href="{% url "imdb:addaward" %}" class='btn btn-primary'>Add award</a>
     </small>
 
     <div class="my-3 p-3 bg-white rounded shadow-sm">
         <h6 class="border-bottom border-gray pb-2 mb-0">Recent added</h6>
+        
+        <div class="row">
         {% for award in recent_added %}
-        <div class="media text-muted pt-3">
-        <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"/><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
-        <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-            <strong class="d-block text-gray-dark">
-            <a href="#">
-            {{ award.name }}
-            </a>
-            </strong>
-            {{ actor.kind }}
-        </p>
+        <div class="col-md-4">
+
+          <div class="card mb-4 box-shadow">
+            <img class="card-img-top" src="{% static "imdb/images/award.png" %}" alt="" width="200" height="350">
+            <div class="card-body">
+
+              <strong class="d-block text-gray-dark">
+              <a href="{% url "imdb:awarddetail" award.id %}">
+              {{ award.name }}
+              </a>
+              </strong>
+              <p class="card-text">{{ award.kind }}</p>
+
+              <div class="d-flex justify-content-between align-items-center">
+
+                <div class="btn-group">
+
+                  <div class="btn-group" role="group">
+
+                    <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Action
+                    </button>
+
+                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                      <a class="dropdown-item" href="{% url "imdb:awarddetail" award.id %}">View</a>
+                      <a class="dropdown-item" href="#">Edit</a>
+                      <a class="dropdown-item" href="#">Delete</a>
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
         </div>
         {% endfor %}
-        <small class="d-block text-right mt-3">
-            <a href="#">All Awards</a>
-        </small>
-    </div>
-
-    <div class="my-3 p-3 bg-white rounded shadow-sm">
-    <h6 class="border-bottom border-gray pb-2 mb-0">Movie Award</h6>
-    {% for movie_award in movie_awards %}
-    <div class="media text-muted pt-3">
-      <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"/><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
-      <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-        <div class="d-flex justify-content-between align-items-center w-100">
-          <strong class="text-gray-dark">{{ movie_award.name }}</strong>
         </div>
-      </div>
-    {% endfor %}
     </div>
 
-    <div class="my-3 p-3 bg-white rounded shadow-sm">
-    <h6 class="border-bottom border-gray pb-2 mb-0">Actor Award</h6>
-    {% for actor_award in actor_awards %}
-    <div class="media text-muted pt-3">
-      <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#007bff"/><text x="50%" y="50%" fill="#007bff" dy=".3em">32x32</text></svg>
-      <div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
-        <div class="d-flex justify-content-between align-items-center w-100">
-          <strong class="text-gray-dark">{{ actor_award.name }}</strong>
+  <div class="my-3 p-3 bg-white rounded shadow-sm">
+        <h6 class="border-bottom border-gray pb-2 mb-0">Movie Award</h6>
+        <div class="row">
+        {% for movie_award in movie_awards %}
+        <div class="col-md-4">
+
+          <div class="card mb-4 box-shadow">
+            <img class="card-img-top" src="{% static "imdb/images/award.png" %}" alt="" width="200" height="350">
+            <div class="card-body">
+
+              <strong class="d-block text-gray-dark">
+              <a href="{% url "imdb:awarddetail" movie_award.id %}">
+              {{ movie_award.name }}
+              </a>
+              </strong>
+              <p class="card-text">{{ movie_award.kind }}</p>
+
+              <div class="d-flex justify-content-between align-items-center">
+
+                <div class="btn-group">
+
+                  <div class="btn-group" role="group">
+
+                    <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Action
+                    </button>
+
+                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                      <a class="dropdown-item" href="{% url "imdb:awarddetail" movie_award.id %}">View</a>
+                      <a class="dropdown-item" href="#">Edit</a>
+                      <a class="dropdown-item" href="#">Delete</a>
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
         </div>
-      </div>
-    {% endfor %}
+        {% endfor %}
+
+        </div>
+        </br>
+        <h6 class="border-bottom border-gray pb-2 mb-0">Actor Award</h6>
+        <div class="row">
+        {% for actor_award in actor_awards %}
+        <div class="col-md-4">
+
+          <div class="card mb-4 box-shadow">
+            <img class="card-img-top" src="{% static "imdb/images/award.png" %}" alt="" width="200" height="350">
+            <div class="card-body">
+
+              <strong class="d-block text-gray-dark">
+              <a href="{% url "imdb:awarddetail" actor_award.id %}">
+              {{ actor_award.name }}
+              </a>
+              </strong>
+              <p class="card-text">{{ actor_award.kind }}</p>
+
+              <div class="d-flex justify-content-between align-items-center">
+
+                <div class="btn-group">
+
+                  <div class="btn-group" role="group">
+
+                    <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Action
+                    </button>
+
+                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                      <a class="dropdown-item" href="{% url "imdb:awarddetail" actor_award.id %}">View</a>
+                      <a class="dropdown-item" href="#">Edit</a>
+                      <a class="dropdown-item" href="#">Delete</a>
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+        {% endfor %}
+        </div>
+
+        </div>
     </div>
 
-  </div>
 </main>
 </body>
 {% endblock %}

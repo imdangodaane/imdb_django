@@ -2,95 +2,63 @@
 
 {% block add_movie %}
 {% load static %}
+
 <body class="bg-light">
     <div class="container">
+
         <div class="py-5 text-left">
-        <h2>Add movie form</h2>
+          <h2>Add movie form</h2>
         </div>
 
         <div class="row">
-        <div class="col-md-4 order-md-2 mb-4">
-        </div>
-    <div class="col-md-8 order-md-1">
-      <h4 class="mb-3">Please fill-in movie information</h4>
-      <form class="needs-validation" novalidate action="/imdb/movies/add/" method="post">
+          <div class="col-md-8 order-md-1">
 
-        <div class="mb-3">
-          <label for="id_title">Title</label>
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text">@</span>
-            </div>
-            <input type="text" class="form-control" id="username" placeholder="Movie title" required>
-            <div class="invalid-feedback" style="width: 100%;">
-              The movie name is required.
-            </div>
-          </div>
-        </div>  
+            <h4 class="mb-3">Please fill-in movie information</h4>
 
-        <div class="form-group green-border-focus">
-            <label for="id_description">Description<span class="text-muted">(Optional)</span></label>
-            <textarea class="form-control" id="id_description" rows="3" placeholder="Movie description"></textarea>
-        </div>
+            <form action="{% url "imdb:addmovie" %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
 
-        <div class="mb-3">
-            <label for="id_release_date">Date</label>
-            <input class="form-control" type="date" id="id_release_date" required>
-            <div class="invalid-feedback" style="width: 100%;">
-              Select movie release date.
-            </div>
-        </div>
+              <div class="mb-3">
 
-        <div class="mb-3">
-        <label for="id_categories">Category</label>
-        <select class="custom-select d-block w-100" id="id_categories" required>
-            <option value="COMEDY" selected>Comedy</option>
-            <option value="SCI-FI">Sci-fi</option>
-            <option value="HORROR">Horror</option>
-            <option value="ROMANCE">Romance</option>
-            <option value="ACTION">Action</option>
-            <option value="THRILLER">Thriller</option>
-            <option value="DRAMA">Drama</option>
-            <option value="MYSTERY">Mystery</option>
-            <option value="CRIME">Crime</option>
-            <option value="ANIMATION">Animation</option>
-            <option value="ADVENTURE">Adventure</option>
-            <option value="FANTASY">Fantasy</option>
-            <option value="COMEDY-ROMANCE">Comedy-romance</option>
-            <option value="ACTION-COMEDY">Action-comedy</option>
-            <option value="SUPERHERO">Superhero</option>
-        </select>
-        </div>
+                <label for="id_title">Title</label>
+                <div class="input-group">
 
-        <hr class="mb-4">
-        <tr><th><label>Actors:</label></th><td><ul id="id_actors">
-            <li><label for="id_actors_0"><input type="checkbox" name="actors" value="1" id="id_actors_0">
-        Qui Nguyen</label>
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">@</span>
+                  </div>
+                  {{ form.title }}
 
-        </li>
-            <li><label for="id_actors_1"><input type="checkbox" name="actors" value="2" id="id_actors_1">
-        Thinh Nguyen</label>
+                </div>
+              </div>  
 
-        </li>
-            <li><label for="id_actors_2"><input type="checkbox" name="actors" value="3" id="id_actors_2">
-        Bao Le</label>
+              <div class="form-group green-border-focus">
+                  <label for="id_description">Description<span class="text-muted"> (Optional)</span></label>
+                  {{ form.description }}
+              </div>
 
-        </li>
-            <li><label for="id_actors_3"><input type="checkbox" name="actors" value="4" id="id_actors_3">
-        Nam Vu</label>
+              <div class="mb-3">
+                <label for="id_release_date_month">Release date:</label>
+                <div class="input-group">
+                {{ form.release_date }}
+                </div>
+              </div>
 
-        </li>
-        </ul></td></tr>
+              <div class="mb-3">
+              <label for="id_categories">Category</label>
+              {{ form.categories }}
+              </div>
 
-        <label for="id_logo">Logo:</label>
-        <div class="custom-file">
-            <input type="file" class="custom-file-input" name="logo" accept="image/*" id="id_logo">
-            <label class="custom-file-label" for="validatedCustomFile">Choose file...</label>
-        </div>
+              <label>Actors:</label>
+              {{ form.actors }}
 
-        <hr class="mb-4">
-        <button class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>
-      </form>
+              <div class="custom-file">
+              {{ form.logo }}
+              <label class="custom-file-label" for="id_logo">Choose file...</label>
+              </div>
+
+              <hr class="mb-4">
+              <input class="btn btn-primary btn-lg btn-block" type="submit" value="Add movie">
+            </form>
     </div>
   </div>
 

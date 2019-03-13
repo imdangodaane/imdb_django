@@ -5,7 +5,7 @@
 </br>
 <h1>Create your account:</h1>
 </br>
-<form action="/imdb/signup/" method="post">
+<form action="{% url "imdb:signup" %}" method="post">
     {% csrf_token %}
     {{ form.username.errors }}
     <div class="form-group row">
@@ -32,7 +32,7 @@
     </div>
     </br>
     <input type="submit" class="btn btn-success" value="Signup">
-    <a class="btn btn-link" href="/imdb/">Homepage</a>
+    <a class="btn btn-link" href="{% url "imdb:index" %}">Homepage</a>
 </div>
 </form>
 

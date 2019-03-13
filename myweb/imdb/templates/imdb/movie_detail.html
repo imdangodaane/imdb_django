@@ -1,0 +1,64 @@
+{% extends 'imdb/base.html' %}
+
+{% block movie_detail %}
+{% load static %}
+<link href="{% static "imdb/product.css" %}" rel="stylesheet">
+<body>
+
+<div class="pos-f-t">
+    <div class="collapse fixed-top" id="navbarToggleExternalContent">
+        <div class="bg-dark p-4">
+          <h5 class="text-white h4">Welcome to IMDB index page.</h5>
+          <span class="text-muted">The largest internet movie database.</span>
+        </div>
+    </div>
+</div>
+
+<nav class="navbar fixed-top navbar-dark bg-dark">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <a class="btn btn-outline-primary" href="{% url "idmb:index" %}">IMDB</a>
+    <a class="nav-link" href="{% url "imdb:movies" %}">Movies</a>
+    <a class="nav-link" href="{% url "imdb:actors" %}">Actors</a>
+    <a class="nav-link" href="{% url "imdb:awards" %}">Awards</a>
+
+    <form class="form-inline">
+        {% if user.is_authenticated %}
+        {% comment %} <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button> {% endcomment %}
+        <a class="btn btn-danger" href="{% url "imdb:logout" %}">Log-out</a>
+        {% else %}
+        <a class="btn btn-primary" href="{% url "imdb:login" %}">Log-in</a>
+        <a class="btn btn-link" href="{% url "imdb:signup" %}">Sign-up</a>
+        {% endif %}
+    </form>
+</nav>
+
+    <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-light">
+
+      <img class="center" src="/media/{{ obj.logo }}" alt="">
+
+      <div class="col-md-5 p-lg-5 mx-auto my-5 text-left">
+      <hr class="mb-4">
+        <h5 class="display-4 font-weight-normal">{{ obj.title }}</h>
+        <p></p>
+        <p class="lead font-weight-normal"><span class="badge badge-info">Genre</span> {{ obj.categories.capitalize }}</p>
+        <p class="lead font-weight-normal"><span class="badge badge-info">Actors</span></p>
+        <p class="lead font-weight-normal">
+        {% for actor in obj.actors.all %}
+        <a href="{% url "imdb:actordetail" actor.id %}" class="lead font-weight-normal">{{ actor }}</a>
+        ,
+        {% endfor %}
+        </p>
+        <p class="lead font-weight-normal"><span class="badge badge-info">Release date</span></p>
+        <p class="lead font-weight-normal">{{ obj.release_date }}</p>
+        <p class="lead font-weight-normal"><span class="badge badge-info">Description</span></p>
+        <p class="lead font-weight-normal">{{ obj.description }}</p>
+      </div>
+
+    </div>
+
+  </body>
+{% endblock %}
