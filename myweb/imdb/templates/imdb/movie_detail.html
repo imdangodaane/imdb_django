@@ -56,10 +56,10 @@
 
         <form action="{% url "imdb:updatemovie" obj.id %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        
+
         <div class="modal-body text-left">
           <div class="form-group">
-            
+
 
             <div class="mb-3">
               <label for="id_title">Title:</label>
@@ -78,10 +78,12 @@
               </div>
             </div>
 
+            {% if user.is_superuser %}
             <div class="mb-3">
               <label for="id_categories">Category:</label>
               {{ pre_form.categories }}
             </div>
+            {% endif %}
 
             <label>Actors:</label>
             {{ pre_form.actors }}
@@ -128,6 +130,10 @@
     <p class="lead font-weight-normal">{{ obj.release_date }}</p>
     <p class="lead font-weight-normal"><span class="badge badge-info">Description</span></p>
     <p class="lead font-weight-normal">{{ obj.description }}</p>
+    <p class="lead font-weight-normal"><span class="badge badge-info">Award</span></p>
+    {% for award in obj.award_set.all %}
+    <p class="lead font-weight-normal"><a href="{% url "imdb:awarddetail" award.id %}">{{ award }}</a></p>
+    {% endfor %}
 
   </div>
 
@@ -232,7 +238,7 @@
     <hr class='mb4'>
 
     {% endfor %}
-    
+
     </div>
 
   </div>

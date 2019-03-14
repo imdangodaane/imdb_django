@@ -52,7 +52,7 @@
 
         <form action="{% url "imdb:updateaward" obj.id %}" method="post">
         {% csrf_token %}
-        
+
         <div class="modal-body text-left">
           <div class="form-group">
 
@@ -94,7 +94,7 @@
 
         <form action="{% url "imdb:assignaward" obj.id %}" method="post">
         {% csrf_token %}
-        
+
         <div class="modal-body text-left">
           <div class="form-group">
 
@@ -126,7 +126,7 @@
 
   <img class="center" src="{% static "imdb/images/award.png" %}" alt="">
 
-  <div class="col-md-5 p-lg-5 mx-auto my-5 text-left">
+  <div class="col-md-auto p-lg-10 mx-auto my-5 text-left">
   <hr class="mb-4">
     <h5 class="display-4 font-weight-normal">{{ obj }}</h>
     <p></p>
@@ -140,6 +140,7 @@
     ,
     {% endfor %}
     </p>
+
     {% elif obj.kind == "ACTOR" and obj.actor_kind.all %}
     <p class="lead font-weight-normal">
     {% for actor in obj.actor_kind.all %}
@@ -148,6 +149,7 @@
     {% endfor %}
     </p>
     {% endif %}
+    <p class="lead font-weight-normal"><span class="badge badge-info">Award assign time</span> {{ obj.date_assign }}</p>
   </div>
 
 </div>
@@ -251,7 +253,7 @@
     <hr class='mb4'>
 
     {% endfor %}
-    
+
     </div>
 
   </div>

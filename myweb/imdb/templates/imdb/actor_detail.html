@@ -52,7 +52,7 @@
 
         <form action="{% url "imdb:updateactor" obj.id %}" method="post">
         {% csrf_token %}
-        
+
         <div class="modal-body text-left">
           <div class="form-group">
 
@@ -114,6 +114,10 @@
     <p class="lead font-weight-normal"><span class="badge badge-info">Gender</span> {{ obj.sex.capitalize }}</p>
     <p class="lead font-weight-normal"><span class="badge badge-info">National</span> {{ obj.nationalities }}</p>
     <p class="lead font-weight-normal"><span class="badge badge-info">Status</span> {% if obj.alive %} Alive {% else %} Dead {% endif %}</p>
+    <p class="lead font-weight-normal"><span class="badge badge-info">Award</span></p>
+    {% for award in obj.award_set.all %}
+    <p class="lead font-weight-normal"><a href="{% url "imdb:awarddetail" award.id %}">{{ award }}</a></p>
+    {% endfor %}
   </div>
 
 </div>
@@ -217,7 +221,7 @@
     <hr class='mb4'>
 
     {% endfor %}
-    
+
     </div>
 
   </div>
