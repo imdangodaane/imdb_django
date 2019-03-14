@@ -87,3 +87,11 @@
   
   .overflow-hidden { overflow: hidden; }
   
+.dl-horizontal {
+    margin-right: 0rem;
+    margin-left: 0rem;
+    display: inline-block;
+    text-overflow: ellipsis;
+    white-space: nowrap; /* or `pre` */
+    overflow: hidden;
+}

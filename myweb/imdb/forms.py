@@ -1,7 +1,7 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.hashers import is_password_usable, make_password, check_password
-from imdb.models import Login, MyUser, Movie, Actor, Award, CustomUser
+from imdb.models import Login, MyUser, Movie, Actor, Award, CustomUser, Comment
 from django.contrib.auth.models import User
 from datetime import datetime
 
@@ -126,7 +126,6 @@ class MovieForm(forms.ModelForm):
         #     choices=FAVORITE_COLORS_CHOICES,
         # )
 
-        
         model = Movie
         fields = "__all__"
         widgets = {
@@ -150,16 +149,46 @@ class ActorForm(forms.ModelForm):
             'birthdate': forms.SelectDateWidget(years=range(datetime.today().year, 1800, -1), attrs={'class': 'form-control'}),
             'sex': forms.Select(attrs={'class': 'custom-select d-block w-100',}),
             'nationalities': forms.Select(attrs={'class': 'custom-select d-block w-100',}),
-            'alive': forms.Select(attrs={'class': 'custom-select d-block w-100',}),
+            'alive': forms.CheckboxInput(attrs={'class': 'custom-control-input',}),
         }
 
 
-class AwardForm(forms.ModelForm):
+class AwardCreateForm(forms.ModelForm):
     
     class Meta:
         model = Award
-        fields = "__all__"
+        fields = ('name', 'kind', )
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control',}),
             'kind': forms.Select(attrs={'class': 'custom-select d-block w-100',}),
+        }
+
+
+class AwardAssignForm(forms.ModelForm):
+
+    class Meta:
+        model = Award
+        fields = ('movie_kind', 'actor_kind',)
+        widgets = {
+            'movie_kind': forms.CheckboxSelectMultiple,
+            'actor_kind': forms.CheckboxSelectMultiple,
+        }
+
+class CommentForm(forms.ModelForm):
+
+    class Meta:
+        model = Comment
+        fields = ('content',)
+        widgets = {
+            'content': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Add your comment', 'rows': '3',}),
+        }
+
+
+class CommentChangeForm(forms.ModelForm):
+
+    class Meta:
+        model = Comment
+        fields = ('content',)
+        widgets = {
+            'content': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Add your comment', 'rows': '3',}),
         }

@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Group, Permission, AbstractUser, UserManager
+from django.contrib.auth.models import User
 
 # Create your models here.
 class Login(models.Model):
@@ -96,7 +97,7 @@ class Actor(models.Model):
 
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    birthdate = models.DateTimeField()
+    birthdate = models.DateField()
     sex = models.CharField(
         max_length=10,
         choices=SEX_CHOICES,
@@ -107,16 +108,7 @@ class Actor(models.Model):
         choices=NATIONALITIES_CHOICES,
         default='Vietnamese',
     )
-    alive = models.CharField(
-        max_length=20,
-        choices=(
-            ('Alive', 'Alive'),
-            ('Dead', 'Dead'),
-            ('NA', 'NA'),
-        ),
-        default='NA',
-        blank=True,
-    )
+    alive = models.BooleanField(blank=True)
 
     def __str__(self):
         return self.first_name + ' ' + self.last_name
@@ -158,18 +150,23 @@ class Movie(models.Model):
     ]
 
     title = models.CharField(max_length=100)
-    description = models.CharField(max_length=254)
-    release_date = models.DateTimeField()
+    description = models.TextField()
+    release_date = models.DateField()
     categories = models.CharField(
         max_length=20,
         choices=CATEGORIES_CHOICES,
         default=COMEDY,
         )
-    actors = models.ManyToManyField(Actor)
+    actors = models.ManyToManyField(Actor, blank=True,)
     logo = models.ImageField(upload_to='logo/', blank=True,)
 
     def __str__(self):
         return self.title
+
+
+# class AwardKind(models.Model):
+#     movie_award = models.ForeignKey(Movie, on_delete=models.CASCADE,)
+#     actor_award = models.ForeignKey(Actor, on_delete=models.CASCADE,)
 
 
 class Award(models.Model):
@@ -181,9 +178,27 @@ class Award(models.Model):
         choices=(
             (ACTOR, ACTOR.capitalize()),
             (MOVIE, MOVIE.capitalize()),
-        )
+        ),
+        default=ACTOR,
     )
+    movie_kind = models.ManyToManyField(Movie, blank=True,)
+    actor_kind = models.ManyToManyField(Actor, blank=True,)
+    date_assign = models.DateTimeField(blank=True, auto_now_add=True,)
 
     def __str__(self):
         return self.name
 
+
+class Comment(models.Model):
+    MOVIE = "Movie"
+    ACTOR = "Actor"
+    AWARD = "Award"
+    user = models.ForeignKey(User, on_delete=models.CASCADE,)
+    target_kind = models.CharField(max_length=20, blank=True,)
+    target_id = models.IntegerField()
+    created_time = models.DateTimeField(auto_now_add=True,)
+    last_edit = models.DateTimeField(blank=True, null=True,)
+    content = models.CharField(max_length=254, blank=False,)
+
+    def __str__(self):
+        return "Cmt of user_id = " + str(self.user.id)

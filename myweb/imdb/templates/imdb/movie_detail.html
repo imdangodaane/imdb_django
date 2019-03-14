@@ -14,20 +14,23 @@
     </div>
 </div>
 
+{% comment %} MODAL {% endcomment %}
+
+
+{% comment %} END MODAL {% endcomment %}
+
 <nav class="navbar fixed-top navbar-dark bg-dark">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
 
-    <a class="btn btn-outline-primary" href="{% url "idmb:index" %}">IMDB</a>
+    <a class="btn btn-outline-primary" href="{% url "imdb:index" %}">IMDB</a>
     <a class="nav-link" href="{% url "imdb:movies" %}">Movies</a>
     <a class="nav-link" href="{% url "imdb:actors" %}">Actors</a>
     <a class="nav-link" href="{% url "imdb:awards" %}">Awards</a>
 
     <form class="form-inline">
         {% if user.is_authenticated %}
-        {% comment %} <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button> {% endcomment %}
         <a class="btn btn-danger" href="{% url "imdb:logout" %}">Log-out</a>
         {% else %}
         <a class="btn btn-primary" href="{% url "imdb:login" %}">Log-in</a>
@@ -36,29 +39,225 @@
     </form>
 </nav>
 
-    <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-light">
+<div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-light">
 
-      <img class="center" src="/media/{{ obj.logo }}" alt="">
+  <button type="button" class="btn btn-success float-right" data-toggle="modal" data-target="#movie_edit{{ obj.id }}">Edit</button>
+  {% comment %} MODAL FOR MOVIE EDIT BUTTON {% endcomment %}
+  <div class="modal fade bd-example-modal-lg" id="movie_edit{{ obj.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
 
-      <div class="col-md-5 p-lg-5 mx-auto my-5 text-left">
-      <hr class="mb-4">
-        <h5 class="display-4 font-weight-normal">{{ obj.title }}</h>
-        <p></p>
-        <p class="lead font-weight-normal"><span class="badge badge-info">Genre</span> {{ obj.categories.capitalize }}</p>
-        <p class="lead font-weight-normal"><span class="badge badge-info">Actors</span></p>
-        <p class="lead font-weight-normal">
-        {% for actor in obj.actors.all %}
-        <a href="{% url "imdb:actordetail" actor.id %}" class="lead font-weight-normal">{{ actor }}</a>
-        ,
-        {% endfor %}
-        </p>
-        <p class="lead font-weight-normal"><span class="badge badge-info">Release date</span></p>
-        <p class="lead font-weight-normal">{{ obj.release_date }}</p>
-        <p class="lead font-weight-normal"><span class="badge badge-info">Description</span></p>
-        <p class="lead font-weight-normal">{{ obj.description }}</p>
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Edit form</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <form action="{% url "imdb:updatemovie" obj.id %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div class="modal-body text-left">
+          <div class="form-group">
+            
+
+            <div class="mb-3">
+              <label for="id_title">Title:</label>
+              {{ pre_form.title }}
+            </div>
+
+            <div class="form-group green-border-focus">
+              <label for="id_description">Description:</label>
+              {{ pre_form.description }}
+            </div>
+
+            <div class="mb-3">
+              <label for="id_release_date_month">Release date:</label>
+              <div class="input-group">
+              {{ pre_form.release_date }}
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="id_categories">Category:</label>
+              {{ pre_form.categories }}
+            </div>
+
+            <label>Actors:</label>
+            {{ pre_form.actors }}
+
+            <div class="custom-file">
+              {{ pre_form.logo }}
+              <label class="custom-file-label" for="id_logo">Choose file...</label>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <input class="btn btn-danger" type="submit" value="Submit">
+        </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <img class="center" src="/media/{{ obj.logo }}" alt="">
+
+  <div class="col-md-auto p-lg-10 mx-auto my-5 text-left">
+
+    <hr class="mb-4">
+    <h5 class="display-4 font-weight-normal">{{ obj.title }}</h>
+    <hr class="mb-4">
+
+    <p></p>
+
+    <p class="lead font-weight-normal"><span class="badge badge-info">Genre</span> {{ obj.categories.capitalize }}</p>
+    <p class="lead font-weight-normal"><span class="badge badge-info">Actors</span></p>
+
+    <p class="lead font-weight-normal">
+    {% for actor in obj.actors.all %}
+    <a href="{% url "imdb:actordetail" actor.id %}" class="lead font-weight-normal">{{ actor }}</a>
+    ,
+    {% endfor %}
+    </p>
+
+    <p class="lead font-weight-normal"><span class="badge badge-info">Release date</span></p>
+    <p class="lead font-weight-normal">{{ obj.release_date }}</p>
+    <p class="lead font-weight-normal"><span class="badge badge-info">Description</span></p>
+    <p class="lead font-weight-normal">{{ obj.description }}</p>
+
+  </div>
+
+</div>
+
+<div class="center">
+
+  <div class="card">
+
+    <div class="card-body">
+
+    {% for comment in load_comments %}
+
+    <div class="card">
+
+      <div class="card-body">
+        {% comment %} MODAL {% endcomment %}
+        {% if user.id == comment.user.id or user.is_staff or user.is_superuser %}
+          {% comment %} DELETE BUTTON {% endcomment %}
+          <button type="button" class="btn btn-danger float-right" data-toggle="modal" data-target="#delete{{ comment.id }}">Delete</button>
+          {% comment %} MODAL FOR DELETE BUTTON {% endcomment %}
+          <div class="modal fade" id="delete{{ comment.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Delete comment</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+
+                <form action="{% url "imdb:comment-delete" comment.id %}" method="post">
+                {% csrf_token %}
+
+                <div class="modal-body">
+                  <div class="form-group">
+                    <div class='card'><div class='card-body'><p>{{ comment.content }}</p></div></div>
+                  </div>
+                  <div class="form-group">
+                    <label for="message-text" class="col-form-label">Are you sure to delete this comment?</label>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <input class="btn btn-danger" type="submit" value="Submit">
+                </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#edit{{ comment.id }}">Edit</button>
+          {% comment %} MODAL FOR EDIT BUTTON {% endcomment %}
+          <div class="modal fade" id="edit{{ comment.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Edit comment</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+
+                <form action="{% url "imdb:comment-update" comment.id %}" method="post">
+                {% csrf_token %}
+
+                <div class="modal-body">
+                  <div class="form-group">
+                    <label for="recipient-name" class="col-form-label">Current:</label>
+                    <div class='card'><div class='card-body'><p>{{ comment.content }}</p></div></div>
+                  </div>
+                  <div class="form-group">
+                    <label for="message-text" class="col-form-label">Change to:</label>
+                    <textarea class="form-control" id="message-text" name="comment_update"></textarea>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <input class="btn btn-primary" type="submit" value="Save changes">
+                </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+        {% comment %} END OF MODAL SECTION {% endcomment %}
+
+        {% comment %} LOAD COMMENTS {% endcomment %}
+        <h5 class="card-title">{{ comment.user }}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">
+        {{ comment.created_time }}
+          {% if comment.last_edit %}
+          (edited: {{ comment.last_edit }})
+          {% endif %}
+        </h6>
+        <p class="card-text">{{ comment.content }}</p>
+
       </div>
 
     </div>
 
-  </body>
+    <hr class='mb4'>
+
+    {% endfor %}
+    
+    </div>
+
+  </div>
+
+  </br>
+
+  {% comment %} ADD COMMENT FORM {% endcomment %}
+  <form action="{% url "imdb:addcomment" obj.id %}" method="post">
+    {% csrf_token %}
+
+    <input type="hidden" name="kind" value="Movie">
+
+    {{ cmt_form.content }}
+
+    </br>
+
+    <input class="btn btn-primary float-right" type="submit" value="Add comment">
+
+    </br>
+    </br>
+
+  </form>
+
+</div>
+
+
+</body>
 {% endblock %}

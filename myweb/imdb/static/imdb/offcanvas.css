@@ -89,3 +89,10 @@ body {
     font-size: 3.5rem;
     }
 }
+
+.card {
+  max-width: 100%;
+}
+.card-text {
+  word-wrap: break-word;
+}

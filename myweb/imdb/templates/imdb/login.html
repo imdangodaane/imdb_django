@@ -5,20 +5,23 @@
 <link href="{% static "imdb/login.css"%}" rel="stylesheet">
 
 <body class="text-center">
-    <form class="form-login" action="{% url "imdb:login "%}" method="post">
+    <form class="form-login" action="{% url "imdb:login" %}" method="post">
       {% csrf_token %}
-
+      
       <img class="mb-4" src="{% static "imdb/images/cat.png"%}" alt="" class="rounded" width="72" height="72">
 
       <h1 class="h3 mb-3 font-weight-normal">Login to IMDB</h1>
 
       <hr class="mb-4">
+      
+      {{ form.non_field_errors }}
 
       <label for="id_username" class="sr-only">Username</label>
       <input type="text" id="id_username" name="username" class="form-control" placeholder="Username">
 
       <label for="id_password" class="sr-only">Password</label>
       <input type="password" id="id_password" name="password" class="form-control" placeholder="Password">
+
 
       <hr class="mb-4">
 

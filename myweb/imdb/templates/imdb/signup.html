@@ -7,7 +7,7 @@
 </br>
 <form action="{% url "imdb:signup" %}" method="post">
     {% csrf_token %}
-    {{ form.username.errors }}
+    {{ form.non_field_errors }}
     <div class="form-group row">
         <label for="id_username" class="col-sm-2 col-form-label">Username:</label>
         <div class="col-sm-7">
@@ -33,7 +33,7 @@
     </br>
     <input type="submit" class="btn btn-success" value="Signup">
     <a class="btn btn-link" href="{% url "imdb:index" %}">Homepage</a>
-</div>
 </form>
+</div>
 
 {% endblock %}
